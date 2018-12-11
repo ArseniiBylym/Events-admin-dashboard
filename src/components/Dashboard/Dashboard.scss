@@ -1,0 +1,26 @@
+.Dashboard{
+    // flex-grow: 1;
+    height: 100vh;
+    // display: flex;
+    // flex-flow: row nowrap;
+
+    .grow{
+        flex-grow: 1;
+    }
+
+    .Dashboard__maniContent{
+        height: auto;
+        min-height: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        position: relative;
+    }
+    .Dashboard__sidebar{
+        width: 20%;
+        background-color: rgba(0,0,0,.1);
+        position: relative;
+    }
+    .Dashboard__maniContainer{
+        width: 80%;
+    }
+}

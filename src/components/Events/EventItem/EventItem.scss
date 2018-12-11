@@ -1,0 +1,21 @@
+.EventItem{
+    padding: 10px;
+
+    .EventItem__media{
+        height: 200px;
+        // padding-top: '56.25%'; // 16:9
+    }
+    .EventItem__orgainzatoInfo-item{
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .EventItem__details{
+        padding: 20px 0;
+    }
+    .EventItem__orgHeader{
+        background-color: rgba(0,0,0,.2);
+        border-radius: 3px;
+    }
+}
