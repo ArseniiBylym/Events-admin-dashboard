@@ -18,11 +18,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess'
-
-
-// import ImageIcon from '@material-ui/icons/Image';
-
+import {connect} from 'react-redux';
+import {
+    ADD_CURRENT_EVENT,
+    REMOVE_CURRENT_EVENT,
+    ADD_NEW_EVENT,
+    DELETE_EVENT
+} from '../../store/actionTypes'
+import DefaultEventImg from '../../../img/event.png'
 import moment from 'moment'
+import {firebaseDB} from '../../../utils/firebase.config'
+
 
 class EventItem extends Component {
     state = {
@@ -36,6 +42,13 @@ class EventItem extends Component {
             }
         })
     }
+    deleteHandler  = () => {
+        console.log(this.props)
+        firebaseDB.ref('/events/' + this.props.config.id).set(null)
+            .then(() => {
+                this.props.deleteEvent(this.props.index)
+            })
+    }
 
     render() {
         const { name, date, img, place, target_market, organizator } = this.props.config
@@ -47,7 +60,7 @@ class EventItem extends Component {
                     />
                     <CardMedia
                         className='EventItem__media'
-                        image={img}
+                        image={img ? img : DefaultEventImg}
                     />
                     <CardContent>
                         <List >
@@ -63,7 +76,7 @@ class EventItem extends Component {
                                 <Button color='primary'><EditIcon /></Button>
                             </Grid>
                             <Grid item sm={4}>
-                                <Button color='primary'><DeleteIcon /></Button>
+                                <Button onClick={this.deleteHandler} color='primary'><DeleteIcon /></Button>
                             </Grid>
                             <Grid item sm={4}>
                                 <Button color='primary' onClick={this.handleExpandClick}>
@@ -93,4 +106,13 @@ class EventItem extends Component {
     }
 }
 
-export default EventItem
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addToCurrentEvent: (org) => (dispatch({type: ADD_CURRENT_EVENT, org: org})),
+        removeFromCurrentEvent: () => (dispatch({type: REMOVE_CURRENT_EVENT})),
+        deleteEvent: (index) => (dispatch({type: DELETE_EVENT, index: index}))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(EventItem)

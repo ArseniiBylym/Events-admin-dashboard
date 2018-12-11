@@ -14,7 +14,14 @@ import EditIcon from '@material-ui/icons/Edit';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import OrgForm from './OrgForm/OrgForm'
-import {ADD_CURRENT_ORG, RMEOVE_CURRENT_ORG} from '../store/actionTypes'
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {firebaseDB} from '../../utils/firebase.config'
+
+import {
+    ADD_CURRENT_ORG, 
+    REMOVE_CURRENT_ORG,
+    DELETE_ORG
+} from '../store/actionTypes'
 
 
 
@@ -40,12 +47,19 @@ class Organizators extends Component {
           this.props.addCurrentOrg(this.props.orgList[index])
           this.handleClickOpen()
       }
+      
+      deleteHandler = (id, index) => event => {
+        firebaseDB.ref('/organizators/' + id).set(null)
+            .then(() => {
+                this.props.deleteCurrentOrg(index)
+            })
+      }
     
 
     render() {
         // console.log(this.props)
-        let list = null
-        if (this.props.orgList.length > 0) {
+        let list = null;
+        if (this.props.orgList && this.props.orgList.length > 0) {
             list = this.props.orgList.map((item, i) => {
                 return (
                     <ExpansionPanel>
@@ -70,7 +84,7 @@ class Organizators extends Component {
                             <Button onClick={this.editHandler(i)} style={{ marginLeft: 'auto' }} color="primary" aria-label="Edit" >
                                 <EditIcon />
                             </Button>
-                            <Button color="" aria-label="Edit" >
+                            <Button onClick={this.deleteHandler(item.id, i)} color="" aria-label="Edit" >
                                 <DeleteIcon />
                             </Button>
                         </ExpansionPanelDetails>
@@ -83,17 +97,15 @@ class Organizators extends Component {
             <div className='Organizators'>
                 <Typography variant='h5' color='primary' gutterBottom={true}>Organizators</Typography>
                 {list}
-                <Grid onClick={this.handleClickOpen} item sm={3} className='AddIcon'>
-                    <Fab color="primary" aria-label="Add" >
-                        <AddIcon />
-                    </Fab>
-                </Grid>
-                <OrgForm 
+                <Fab onClick={this.handleClickOpen} className='AddIcon' color="primary" aria-label="Add" >
+                    <AddIcon />
+                </Fab>
+                {this.state.dialogOpen && <OrgForm 
                     open={this.state.dialogOpen}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title"
                     currentOrg={this.props.currentOrg}
-                />
+                />}
             </div>
         )
     }
@@ -109,7 +121,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addCurrentOrg: (org) => (dispatch({type: ADD_CURRENT_ORG, org: org})),
-        removeCurrentOrg: () => (dispatch({type: RMEOVE_CURRENT_ORG}))
+        removeCurrentOrg: () => (dispatch({type: REMOVE_CURRENT_ORG})),
+        deleteCurrentOrg: (index) => (dispatch({type: DELETE_ORG, index: index}))
     }
 }
 

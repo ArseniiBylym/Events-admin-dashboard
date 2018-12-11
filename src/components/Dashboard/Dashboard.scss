@@ -1,8 +1,8 @@
 .Dashboard{
     // flex-grow: 1;
     height: 100vh;
-    // display: flex;
-    // flex-flow: row nowrap;
+    display: flex;
+    flex-flow: column nowrap;
 
     .grow{
         flex-grow: 1;
@@ -10,7 +10,8 @@
 
     .Dashboard__maniContent{
         height: auto;
-        min-height: 100%;
+        // min-height: 100%;
+        flex-grow: 1;
         display: flex;
         flex-flow: row nowrap;
         position: relative;
@@ -22,5 +23,6 @@
     }
     .Dashboard__maniContainer{
         width: 80%;
+        overflow: auto;
     }
 }
