@@ -50,6 +50,12 @@ class EventItem extends Component {
             })
     }
 
+    editHandler = index => event => {
+        console.log(this.props.config)
+        this.props.addToCurrentEvent(this.props.config)
+        this.props.open()
+    }
+
     render() {
         const { name, date, img, place, target_market, organizator } = this.props.config
         return (
@@ -73,7 +79,7 @@ class EventItem extends Component {
                         </List>
                         <Grid container justify='space-between'>
                             <Grid item sm={4}>
-                                <Button color='primary'><EditIcon /></Button>
+                                <Button onClick={this.editHandler()} color='primary'><EditIcon /></Button>
                             </Grid>
                             <Grid item sm={4}>
                                 <Button onClick={this.deleteHandler} color='primary'><DeleteIcon /></Button>
@@ -109,7 +115,7 @@ class EventItem extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addToCurrentEvent: (org) => (dispatch({type: ADD_CURRENT_EVENT, org: org})),
+        addToCurrentEvent: (event) => (dispatch({type: ADD_CURRENT_EVENT, event: event})),
         removeFromCurrentEvent: () => (dispatch({type: REMOVE_CURRENT_EVENT})),
         deleteEvent: (index) => (dispatch({type: DELETE_EVENT, index: index}))
     }

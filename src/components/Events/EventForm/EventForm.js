@@ -139,7 +139,15 @@ class EventForm extends Component {
         }
     };
 
+    updateFormHandler = (reset) => {
+        console.log('update')
+        console.log(this.state)
+        reset()
+        this.props.onClose()
+    }
+
     createFormHandler = (reset) => {
+        console.log('crate')
         console.log(this.state)
         reset()
         this.props.onClose()
@@ -254,7 +262,7 @@ class EventForm extends Component {
                 <Button onClick={this.props.onClose} color="primary">
                     Cancel
                 </Button>
-                <Button disabled={pristine || invalid} onClick={this.createFormHandler.bind(this, reset)} color="primary">
+                <Button disabled={pristine || invalid} onClick={this.props.currentEvent ? this.updateFormHandler.bind(this, reset) : this.createFormHandler.bind(this, reset)} color="primary">
                     Add
                 </Button>
             </DialogActions>
@@ -266,6 +274,8 @@ class EventForm extends Component {
 
 const mapStateToProps = state => {
     return {
+        eventsList: state.events.eventsList,
+        currentEvent: state.events.currentEvent,
         orgList: state.organizators.orgList
     }
 }

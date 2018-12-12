@@ -37,7 +37,7 @@ class Events extends Component {
         console.log(this.props.eventsList)
         if(this.props.eventsList && this.props.eventsList.length > 0) {
             items = this.props.eventsList.map((item, i) => {
-               return (<EventItem key={item.id} config={item} index={i}/>)
+               return (<EventItem key={item.id} config={item} index={i} open={this.handleClickOpen} close={this.handleClose}/>)
             })
         }
         return(

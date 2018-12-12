@@ -86,6 +86,12 @@ class App extends Component {
 	}
 }
 
+const mapStateToProps = state => {
+	return {
+		currentUser: state.currentUser
+	}
+}
+
 const mapDispatchToProps = dispatch => {
 	return {
 		getEvents: (data) => (dispatch({ type: GET_EVENTS_SAGA, data: data })),
@@ -95,4 +101,4 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -8,6 +8,12 @@ import Button from '@material-ui/core/Button';
 import { Field, reduxForm } from 'redux-form'
 import AppBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import PermIdentity from '@material-ui/icons/PermIdentity';
+import LockIcon from '@material-ui/icons/Lock';
+
+
 
 const validate = values => {
     const errors = {}
@@ -37,7 +43,7 @@ class Login extends Component {
         });
     };
 
-    renderTextField = ({
+    renderTextNameField = ({
         name,
         input,
         label,
@@ -51,16 +57,47 @@ class Login extends Component {
             value={this.state[name]}
             margin="dense"
             error={touched && error && true}
-            // InputProps={{
-            //     disableUnderline: true
-            // }}
-            // InputLabelProps={{
-            //     shrink: true,
-            // }}
-            // FormHelperTextProps={{
-            //     filled: true,
-            //     focused: true
-            // }}
+            InputLabelProps={{
+                shrink: true,
+            }}
+            InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PermIdentity />
+                  </InputAdornment>
+                ),
+              }}
+            
+            {...input}
+            {...custom}
+        />
+    }
+
+    renderTextPasswordField = ({
+        name,
+        input,
+        label,
+        meta: { touched, error },
+        onChange,
+        ...custom
+    }) => {
+        return <TextField
+            label={label}
+            helperText={touched && error}
+            value={this.state[name]}
+            margin="dense"
+            error={touched && error && true}
+            InputLabelProps={{
+                shrink: true,
+            }}
+            InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+              }}
+            
             {...input}
             {...custom}
         />
@@ -86,12 +123,13 @@ class Login extends Component {
                         Login
                     </Typography>
                 </AppBar> */}
+                <AccountCircle className='loginLogo' color='primary'/>
                     <form onSubmit={this.sendFormHander} noValidate autoComplete="off">
                         <Grid container direction='column' wrap='nowrap' justify='center' spacing={16}>
                             <Grid item sm={12}>
                                 <Field
                                     name="name"
-                                    component={this.renderTextField}
+                                    component={this.renderTextNameField}
                                     label="Name"
                                     onChange={this.handleChange("name")}
                                 />
@@ -99,7 +137,7 @@ class Login extends Component {
                             <Grid item sm={12}>
                                 <Field
                                     name="password"
-                                    component={this.renderTextField}
+                                    component={this.renderTextPasswordField}
                                     label="Password"
                                     type='password'
                                     onChange={this.handleChange("password")}

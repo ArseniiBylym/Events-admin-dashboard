@@ -98,6 +98,11 @@ class OrgForm extends Component {
         }
     };
 
+    updateFormHandler = (reset) => {
+        console.log('update')
+        this.props.onClose()
+    }
+
     createFormHandler =  (reset) => {
         // console.log(this.state)
         reset()
@@ -193,7 +198,7 @@ class OrgForm extends Component {
                     <Button onClick={this.props.onClose} color="primary">
                         Cancel
                     </Button>
-                    <Button disabled={pristine || invalid} onClick={this.createFormHandler.bind(this, reset)} color="primary">
+                    <Button disabled={pristine || invalid} onClick={this.props.currentOrg ? this.updateFormHandler.bind(this, reset) : this.createFormHandler.bind(this, reset)} color="primary">
                         Add
                     </Button>
                 </DialogActions>
@@ -204,7 +209,7 @@ class OrgForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        // currentOrg: state.organizators.currentOrg
+        currentOrg: state.organizators.currentOrg
     }
 }
 

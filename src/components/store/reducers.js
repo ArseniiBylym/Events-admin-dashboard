@@ -23,10 +23,10 @@ const events = (state = {}, action) => {
                 eventsList: action.events
             }
         case ADD_CURRENT_EVENT: 
-        return {
-            ...state,
-            currentEvent: action.event
-        }
+            return {
+                ...state,
+                currentEvent: action.event
+            }
         case REMOVE_CURRENT_EVENT: 
         return {
             ...state,
@@ -93,6 +93,8 @@ const currentUser = (state = {}, action) => {
             } else return state
         case 'LOGOUT': 
             localStorage.removeItem('name')
+            
+            
             return {}
         default: 
             return state
