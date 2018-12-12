@@ -8,56 +8,49 @@ import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import OrgForm from './OrgForm/OrgForm'
-import CircularProgress from '@material-ui/core/CircularProgress';
-import {firebaseDB} from '../../utils/firebase.config'
-
+import { firebaseDB } from '../../utils/firebase.config'
+import { connect } from 'react-redux'
 import {
-    ADD_CURRENT_ORG, 
+    ADD_CURRENT_ORG,
     REMOVE_CURRENT_ORG,
     DELETE_ORG
 } from '../store/actionTypes'
-
-
-
-import { connect } from 'react-redux'
 
 class Organizators extends Component {
     state = {
         dialogOpen: false
     }
 
-      handleClickOpen = () => {
+    handleClickOpen = () => {
         this.setState({ dialogOpen: true });
-      };
-    
-      handleClose = () => {
-        if(this.props.currentOrg) {
+    };
+
+    handleClose = () => {
+        if (this.props.currentOrg) {
             this.props.removeCurrentOrg()
         }
         this.setState({ dialogOpen: false });
-      };
+    };
 
-      editHandler = index => event => {
-          this.props.addCurrentOrg(this.props.orgList[index])
-          this.handleClickOpen()
-      }
-      
-      deleteHandler = (id, index) => event => {
+    editHandler = index => event => {
+        this.props.addCurrentOrg(this.props.orgList[index])
+        this.handleClickOpen()
+    }
+
+    deleteHandler = (id, index) => event => {
         firebaseDB.ref('/organizators/' + id).set(null)
             .then(() => {
                 this.props.deleteCurrentOrg(index)
             })
-      }
-    
+    }
+
 
     render() {
-        // console.log(this.props)
         let list = null;
         if (this.props.orgList && this.props.orgList.length > 0) {
             list = this.props.orgList.map((item, i) => {
@@ -100,7 +93,7 @@ class Organizators extends Component {
                 <Fab onClick={this.handleClickOpen} className='AddIcon' color="primary" aria-label="Add" >
                     <AddIcon />
                 </Fab>
-                {this.state.dialogOpen && <OrgForm 
+                {this.state.dialogOpen && <OrgForm
                     open={this.state.dialogOpen}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title"
@@ -120,9 +113,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addCurrentOrg: (org) => (dispatch({type: ADD_CURRENT_ORG, org: org})),
-        removeCurrentOrg: () => (dispatch({type: REMOVE_CURRENT_ORG})),
-        deleteCurrentOrg: (index) => (dispatch({type: DELETE_ORG, index: index}))
+        addCurrentOrg: (org) => (dispatch({ type: ADD_CURRENT_ORG, org: org })),
+        removeCurrentOrg: () => (dispatch({ type: REMOVE_CURRENT_ORG })),
+        deleteCurrentOrg: (index) => (dispatch({ type: DELETE_ORG, index: index }))
     }
 }
 

@@ -2,18 +2,14 @@ import React, { Component } from 'react';
 import './Login.scss';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { Field, reduxForm } from 'redux-form'
-import AppBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import PermIdentity from '@material-ui/icons/PermIdentity';
 import LockIcon from '@material-ui/icons/Lock';
-
-
 
 const validate = values => {
     const errors = {}
@@ -29,7 +25,6 @@ const validate = values => {
     return errors
 }
 
-
 class Login extends Component {
     state = {
         name: '',
@@ -37,7 +32,6 @@ class Login extends Component {
     }
 
     handleChange = name => event => {
-        console.log(event, name)
         this.setState({
             [name]: event.target.value,
         });
@@ -48,7 +42,6 @@ class Login extends Component {
         input,
         label,
         meta: { touched, error },
-        onChange,
         ...custom
     }) => {
         return <TextField
@@ -67,7 +60,6 @@ class Login extends Component {
                   </InputAdornment>
                 ),
               }}
-            
             {...input}
             {...custom}
         />
@@ -78,7 +70,6 @@ class Login extends Component {
         input,
         label,
         meta: { touched, error },
-        onChange,
         ...custom
     }) => {
         return <TextField
@@ -97,32 +88,22 @@ class Login extends Component {
                   </InputAdornment>
                 ),
               }}
-            
-            {...input}
             {...custom}
+            {...input}
         />
     }
 
     sendFormHander = () => {
-        console.log(this.state)
         this.props.login(this.state.name, this.state.password)
         this.props.history.push('/home/events')
     }
 
-
-
     render() {
-        console.log(this.props)
-        const { handleSubmit, pristine, reset, invalid, submitting } = this.props
+        const { pristine, invalid } = this.props
 
         return (
             <div className='Login'>
                 <Paper className='customPaper' elevation={4}>
-                    {/* <AppBar color='primary' position="static">
-                    <Typography component="h3" variant="display1" gutterBottom>
-                        Login
-                    </Typography>
-                </AppBar> */}
                 <AccountCircle className='loginLogo' color='primary'/>
                     <form onSubmit={this.sendFormHander} noValidate autoComplete="off">
                         <Grid container direction='column' wrap='nowrap' justify='center' spacing={16}>
@@ -144,7 +125,7 @@ class Login extends Component {
                                 />
                             </Grid>
                             <Grid item sm={12}>
-                                <Button variant="contained" color="primary" disabled={pristine || invalid} onClick={this.sendFormHander}  >
+                                <Button fullWidth variant="contained" color="primary" disabled={pristine || invalid} onClick={this.sendFormHander}  >
                                     Log In
                                 </Button>
                             </Grid>

@@ -7,11 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import EventForm from './EventForm/EventForm'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import {
     ADD_CURRENT_EVENT,
     REMOVE_CURRENT_EVENT,
-    ADD_NEW_EVENT,
     DELETE_EVENT
 } from '../store/actionTypes'
 
@@ -26,15 +24,11 @@ class Events extends Component {
       };
     
       handleClose = () => {
-        // if(this.props.currentOrg) {
-        //     this.props.removeCurrentOrg()
-        // }
         this.setState({ dialogOpen: false });
       };
 
     render() {
         let items = null
-        console.log(this.props.eventsList)
         if(this.props.eventsList && this.props.eventsList.length > 0) {
             items = this.props.eventsList.map((item, i) => {
                return (<EventItem key={item.id} config={item} index={i} open={this.handleClickOpen} close={this.handleClose}/>)

@@ -6,9 +6,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
-import CardActions from '@material-ui/core/CardActions';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -22,7 +20,6 @@ import {connect} from 'react-redux';
 import {
     ADD_CURRENT_EVENT,
     REMOVE_CURRENT_EVENT,
-    ADD_NEW_EVENT,
     DELETE_EVENT
 } from '../../store/actionTypes'
 import DefaultEventImg from '../../../img/event.png'
@@ -43,7 +40,6 @@ class EventItem extends Component {
         })
     }
     deleteHandler  = () => {
-        console.log(this.props)
         firebaseDB.ref('/events/' + this.props.config.id).set(null)
             .then(() => {
                 this.props.deleteEvent(this.props.index)
@@ -51,7 +47,6 @@ class EventItem extends Component {
     }
 
     editHandler = index => event => {
-        console.log(this.props.config)
         this.props.addToCurrentEvent(this.props.config)
         this.props.open()
     }

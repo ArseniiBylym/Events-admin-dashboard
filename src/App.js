@@ -7,13 +7,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import teal from '@material-ui/core/colors/teal';
 import grey from '@material-ui/core/colors/grey';
 import { connect } from 'react-redux'
-import { firebaseDB } from './utils/firebase.config'
-import {
-	GET_ORGS_SAGA,
-	GET_EVENTS_SAGA,
-	INITIALIZE_ORGS,
-	INITIALIZE_EVENTS,
-} from './components/store/actionTypes'
+import {getEventsFromDB, getOrgsFromDB} from './components/store/actions'
 
 const theme = createMuiTheme({
 	palette: {
@@ -29,37 +23,11 @@ const theme = createMuiTheme({
 class App extends Component {
 
 	componentDidMount = () => {
-		firebaseDB.ref('/events').once('value')
-			.then(snapshot => {
-				let events = []
-				snapshot.forEach((item, i) => {
-					let obj = item.val();
-					obj.id = item.key
-					events.push(obj)
-				})
-				this.props.setEvents(events)
-			}).catch(e => {
-				console.log(e.message)
-			})
-
-		firebaseDB.ref('/organizators').once('value')
-			.then(snapshot => {
-				let orgs = []
-				snapshot.forEach((item, i) => {
-					let obj = item.val();
-					obj.id = item.key
-					orgs.push(obj)
-				})
-				this.props.setOrgs(orgs)
-			}).catch(e => {
-				console.log(e.message)
-			})
-		// this.props.getEvents('some data')
-
+		this.props.getAllEvents();
+		this.props.getAllOrgs();
 	}
 
 	render() {
-
 		const isLogin = localStorage.getItem('name')
 		return (
 			<MuiThemeProvider theme={theme}>
@@ -94,10 +62,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		getEvents: (data) => (dispatch({ type: GET_EVENTS_SAGA, data: data })),
-		getOrgs: () => (dispatch({ type: GET_ORGS_SAGA })),
-		setEvents: (events) => (dispatch({ type: INITIALIZE_EVENTS, events: events })),
-		setOrgs: (orgs) => (dispatch({ type: INITIALIZE_ORGS, orgs: orgs }))
+		getAllEvents: () => dispatch(getEventsFromDB()),
+		getAllOrgs: () => dispatch(getOrgsFromDB()),
 	}
 }
 

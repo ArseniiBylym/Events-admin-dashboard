@@ -10,16 +10,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
 import MenuItem from '@material-ui/core/MenuItem';
-import moment from 'moment';
-import Select from '@material-ui/core/Select';
-import {getBase64} from '../../../utils/transformFunc'
-import {firebaseDB} from '../../../utils/firebase.config'
+import {createNewEvent, updateCurrentEvent} from '../../store/actions'
 import {
-    ADD_CURRENT_EVENT,
     REMOVE_CURRENT_EVENT,
-    ADD_NEW_EVENT,
-    DELETE_EVENT,
-    UPDATE_EVENT
+    INIT_EVENTS_STATE,
+    CLEAR_EVENTS_STATE
 } from '../../store/actionTypes'
 
 
@@ -39,7 +34,6 @@ const validate = values => {
         }
     })
     if(values.date && (+new Date(values.date) < +new Date())){
-        console.log(values.date)
         errors.date = 'Please shoose a future date'
     }
     
@@ -56,7 +50,6 @@ class EventForm extends Component {
     }
 
     renderTextField = ({
-        // name,
         input,
         label,
         type,
@@ -74,17 +67,16 @@ class EventForm extends Component {
                 shrink: true 
             }}
             {...input}
-            // {...custom}
+            {...custom}
         />
     }
     renderSelectField = ({
-        // name,
         input,
         label,
         type,
         children,
         meta: { touched, error },
-        // ...custom
+        ...custom
     }) => {
         return <TextField
             label={label}
@@ -99,7 +91,7 @@ class EventForm extends Component {
             }}
             children={children}
             {...input}
-            // {...custom}
+            {...custom}
         >
         </TextField>
     }
@@ -116,13 +108,13 @@ class EventForm extends Component {
         helperText={touched && error}
         error={touched && error && true}
         margin="dense"
-        label="Picture"
         type="file"
         fullWidth
         InputLabelProps={{
             shrink: true 
         }}
         onChange={this.handleChangeFile('img')}
+        {...custom}
     />
     }
 
@@ -141,99 +133,19 @@ class EventForm extends Component {
     };
 
     updateFormHandler = (reset) => {
-        console.log('update')
-        console.log(this.state)
         reset()
         this.props.onClose()
-
-        const orgData = this.props.orgList.find((item, i) => {
-            if(item.id === this.state.organizator) return true
-            else return false
-         })
-         if(this.state.img && typeof(this.state.img) !== 'string') {
-             getBase64(this.state.img).then(dataFile => {
-                firebaseDB.ref('/events/' + this.state.id).set({
-                     ...this.state,
-                     organizator: orgData,
-                     img: dataFile
-                 }).then((snapshot) => {
-                     this.props.updateEvent({
-                         ...this.state,
-                         organizator: orgData,
-                         img: dataFile,
-                        //  id: snapshot.key
-                     })
-                 }).catch((e) => {
-                     console.log(e.message)
-                 })
-             })
-         } else {
-             firebaseDB.ref('/events/' + this.state.id).set({
-                 ...this.state,
-                 organizator: orgData,
-             }).then((snapshot) => {
-                 this.props.updateEvent({
-                     ...this.state,
-                     organizator: orgData,
-                    //  id: snapshot.key
-                 })
-             }).catch((e) => {
-                 console.log(e.message)
-             })
-         }
+        this.props.updateCurrentEvent(this.state, this.props.orgList)
     }
 
     createFormHandler = (reset) => {
-        console.log('crate')
-        console.log(this.state)
         reset()
         this.props.onClose()
-        const orgData = this.props.orgList.find((item, i) => {
-           if(item.id === this.state.organizator) return true
-           else return false
-        })
-        if(this.state.img && typeof(this.state.img) !== 'string') {
-            getBase64(this.state.img).then(dataFile => {
-               firebaseDB.ref('/events/').push({
-                    ...this.state,
-                    organizator: orgData,
-                    img: dataFile
-                }).then((snapshot) => {
-                    this.props.addNewEvent({
-                        ...this.state,
-                        organizator: orgData,
-                        img: dataFile,
-                        id: snapshot.key
-                    })
-                }).catch((e) => {
-                    console.log(e.message)
-                })
-            })
-        } else {
-            firebaseDB.ref('/events/').push({
-                ...this.state,
-                organizator: orgData,
-            }).then((snapshot) => {
-                this.props.addNewEvent({
-                    ...this.state,
-                    organizator: orgData,
-                    id: snapshot.key
-                })
-            }).catch((e) => {
-                console.log(e.message)
-            })
-        }
-    }
-
-
-    componentDidUpdate = (pverState, prevProps) => {
-        console.log(this.state)
+        this.props.createNewEvent(this.state, this.props.orgList)
     }
 
     componentDidMount = () => {
-        console.log(this.state)
        if(this.props.currentEvent){
-           console.log('dasdfsdf---------------- dsdsfdsf')
            this.props.initEvent(this.props.currentEvent)
            this.setState({
                ...this.props.currentEvent,
@@ -252,7 +164,7 @@ class EventForm extends Component {
 
     render() {
 
-        const { handleSubmit, pristine, reset, invalid, submitting } = this.props
+        const { pristine, reset, invalid,} = this.props
 
         return(
             <Dialog
@@ -326,7 +238,6 @@ class EventForm extends Component {
     }
 }
 
-
 const mapStateToProps = state => {
     return {
         eventsList: state.events.eventsList,
@@ -338,11 +249,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addNewEvent: (newEvent) => (dispatch({type: ADD_NEW_EVENT, newEvent: newEvent})),
-        initEvent: (data) => (dispatch({type: 'INIT_EVENTS_STATE', data: data})),
+        createNewEvent: (data, orgList) => dispatch(createNewEvent(data, orgList)),
+        updateCurrentEvent: (data, orgList) => dispatch(updateCurrentEvent(data, orgList)),
+        initEvent: (data) => (dispatch({type: INIT_EVENTS_STATE, data: data})),
         removeCurrentEvent: () => (dispatch({type: REMOVE_CURRENT_EVENT})),
-        clearInitialState: () => (dispatch({type: 'CLEAR_EVENTS_STATE'})),
-        updateEvent: (data) => (dispatch({type: UPDATE_EVENT, data: data}))
+        clearInitialState: () => (dispatch({type: CLEAR_EVENTS_STATE})),
     }
 }
 

@@ -1,6 +1,5 @@
 import {combineReducers} from 'redux';
 import { reducer as formReducer } from 'redux-form'
-import {tempEvents, orgList} from './tempData'
 import {
     ADD_CURRENT_ORG, 
     REMOVE_CURRENT_ORG, 
@@ -47,7 +46,7 @@ const events = (state = {}, action) => {
         }
         case UPDATE_EVENT: 
             const newUpdatedList = state.eventsList.map((item, i ) => {
-                if(item.id == action.data.id) {
+                if(item.id === action.data.id) {
                     return {
                         ...action.data,
                         id: item.id
@@ -63,7 +62,6 @@ const events = (state = {}, action) => {
 }
 
 const organizators = (state = {}, action) => {
-    console.log(action)
     switch (action.type) {
         case INITIALIZE_ORGS: 
             return {
@@ -92,7 +90,7 @@ const organizators = (state = {}, action) => {
             }
         case UPDATE_ORG: 
             const newUpdatedList = state.orgList.map((item, i ) => {
-                if(item.id == action.data.id) {
+                if(item.id === action.data.id) {
                     return {
                         ...action.data,
                         id: item.id
@@ -119,8 +117,6 @@ const currentUser = (state = {}, action) => {
             } else return state
         case 'LOGOUT': 
             localStorage.removeItem('name')
-            
-            
             return {}
         default: 
             return state
@@ -137,9 +133,7 @@ const eventFormInit = (state = {}, action) => {
                 }
             }
         case 'CLEAR_EVENTS_STATE':
-            return {
-                
-            }
+            return {}
         default: 
             return state
     }
@@ -153,9 +147,7 @@ const orgFormInit = (state = {}, action) => {
                 data: action.data
             }
         case 'CLEAR_ORGS_STATE':
-            return {
-                
-            }
+            return {}
         default: 
             return state
     }
@@ -165,9 +157,9 @@ const reducers = combineReducers({
     events,
     organizators,
     currentUser,
-    form: formReducer,
     eventFormInit,
-    orgFormInit
+    orgFormInit,
+    form: formReducer,
 });
 
 export default reducers;

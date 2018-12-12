@@ -8,9 +8,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
-import {getBase64} from '../../../utils/transformFunc'
-import {ADD_NEW_ORG, REMOVE_CURRENT_ORG, UPDATE_ORG} from '../../store/actionTypes'
-import {firebaseDB} from '../../../utils/firebase.config'
+import {INIT_ORGS_STATE, CLEAR_ORGS_STATE} from '../../store/actionTypes'
+import {createNewOrg, updateCurrentOrg} from '../../store/actions'
 
 
 const validate = values => {
@@ -74,7 +73,6 @@ class OrgForm extends Component {
         error={touched && error && true}
         margin="dense"
         id="name"
-        label="Logo"
         type="file"
         fullWidth
         InputLabelProps={{
@@ -99,88 +97,18 @@ class OrgForm extends Component {
     };
 
     updateFormHandler = (reset) => {
-        console.log('update')
         reset()
         this.props.onClose()
-
-        if(this.state.logo && typeof(this.state.logo) !== 'string') {
-            getBase64(this.state.logo).then(dataFile => {
-                firebaseDB.ref('/organizators/' + this.state.id).set({
-                    ...this.state,
-                    logo: dataFile
-                }).then((snapshot) => {
-                    this.props.updateOrg({
-                        ...this.state,
-                        // id: snapshot.key,
-                        logo: dataFile
-                    })
-                }).catch(e => {
-                    alert(e.message)
-                })
-               
-            })
-        } else {
-            firebaseDB.ref('/organizators/' + this.state.id).set({
-                ...this.state,
-                logo: this.state.logo || ''
-            }).then((snapshot) => {
-                this.props.updateOrg({
-                    ...this.state,
-                    // id: snapshot.key,
-                    logo: this.state.logo || ''
-                })
-            }).catch(e => {
-                alert(e.message)
-            })
-            
-        }
-
+        this.props.updateCurrentOrg(this.state)
     }
 
     createFormHandler =  (reset) => {
-        // console.log(this.state)
         reset()
         this.props.onClose()
-
-        if(this.state.logo && typeof(this.state.logo) !== 'string') {
-            getBase64(this.state.logo).then(dataFile => {
-                firebaseDB.ref('/organizators/').push({
-                    ...this.state,
-                    logo: dataFile
-                }).then((snapshot) => {
-                    this.props.addNewOrg({
-                        ...this.state,
-                        id: snapshot.key,
-                        logo: dataFile
-                    })
-                }).catch(e => {
-                    alert(e.message)
-                })
-               
-            })
-        } else {
-            firebaseDB.ref('/organizators/').push({
-                ...this.state,
-                logo: this.state.logo || ''
-            }).then((snapshot) => {
-                this.props.addNewOrg({
-                    ...this.state,
-                    id: snapshot.key,
-                    logo: this.state.logo || ''
-                })
-            }).catch(e => {
-                alert(e.message)
-            })
-            
-        }
-    }
-
-    componentDidUpdate = (pverState, prevProps) => {
-        console.log(this.state)
+        this.props.createNewOrg(this.state)
     }
 
     componentDidMount = () => {
-        console.log(this.state)
         if(this.props.currentOrg) {
             this.props.initOrg(this.props.currentOrg)
             this.setState({
@@ -191,13 +119,10 @@ class OrgForm extends Component {
     
     componentWillUnmount = () => {
         this.props.clearInitialState()
-
     }
 
-
-
     render() {
-        const { handleSubmit, pristine, reset, invalid, submitting } = this.props
+        const { pristine, reset, invalid, } = this.props
 
         return (
             <Dialog
@@ -259,11 +184,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addNewOrg: (newOrg) => (dispatch({type: ADD_NEW_ORG, newOrg: newOrg})),
-        initOrg: (data) => (dispatch({type: 'INIT_ORGS_STATE', data: data})),
-        removeCurrentOrg: () => (dispatch({type: REMOVE_CURRENT_ORG})),
-        clearInitialState: () => (dispatch({type: 'CLEAR_ORGS_STATE'})),
-        updateOrg: (data) => (dispatch({type: UPDATE_ORG, data: data}))
+        createNewOrg: (data) => dispatch(createNewOrg(data)),
+        updateCurrentOrg: (data) => dispatch(updateCurrentOrg(data)),
+
+        initOrg: (data) => (dispatch({type: INIT_ORGS_STATE, data: data})),
+        clearInitialState: () => (dispatch({type: CLEAR_ORGS_STATE})),
     }
 }
 
