@@ -192,7 +192,18 @@ class EventForm extends Component {
     }
 
     componentDidMount = () => {
-       
+       if(this.props.currentEvent){
+           console.log('dasdfsdf---------------- dsdsfdsf')
+           this.props.initEvent(this.props.currentEvent)
+        }
+    }
+    
+    componentWillUnmount = () => {
+        this.props.clearInitialState()
+        
+        if(this.props.currentEvent) {
+            this.props.removeCurrentEvent()
+        }
     }
 
     render() {
@@ -276,13 +287,17 @@ const mapStateToProps = state => {
     return {
         eventsList: state.events.eventsList,
         currentEvent: state.events.currentEvent,
-        orgList: state.organizators.orgList
+        orgList: state.organizators.orgList,
+        initialValues: state.eventFormInit.data
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        addNewEvent: (newEvent) => (dispatch({type: ADD_NEW_EVENT, newEvent: newEvent}))
+        addNewEvent: (newEvent) => (dispatch({type: ADD_NEW_EVENT, newEvent: newEvent})),
+        initEvent: (data) => (dispatch({type: 'INIT_EVENTS_STATE', data: data})),
+        removeCurrentEvent: () => (dispatch({type: REMOVE_CURRENT_EVENT})),
+        clearInitialState: () => (dispatch({type: 'CLEAR_EVENTS_STATE'})),
     }
 }
 

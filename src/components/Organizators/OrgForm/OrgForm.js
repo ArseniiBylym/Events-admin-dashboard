@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
 import {getBase64} from '../../../utils/transformFunc'
-import {ADD_NEW_ORG} from '../../store/actionTypes'
+import {ADD_NEW_ORG, REMOVE_CURRENT_ORG} from '../../store/actionTypes'
 import {firebaseDB} from '../../../utils/firebase.config'
 
 
@@ -148,7 +148,15 @@ class OrgForm extends Component {
     }
 
     componentDidMount = () => {
-        console.log(this.props.currentOrg)
+        
+        if(this.props.currentOrg) {
+            this.props.initOrg(this.props.currentOrg)
+        }
+    }
+    
+    componentWillUnmount = () => {
+        this.props.clearInitialState()
+
     }
 
 
@@ -209,13 +217,17 @@ class OrgForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        currentOrg: state.organizators.currentOrg
+        currentOrg: state.organizators.currentOrg,
+        initialValues: state.orgFormInit.data
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        addNewOrg: (newOrg) => (dispatch({type: ADD_NEW_ORG, newOrg: newOrg}))
+        addNewOrg: (newOrg) => (dispatch({type: ADD_NEW_ORG, newOrg: newOrg})),
+        initOrg: (data) => (dispatch({type: 'INIT_ORGS_STATE', data: data})),
+        removeCurrentOrg: () => (dispatch({type: REMOVE_CURRENT_ORG})),
+        clearInitialState: () => (dispatch({type: 'CLEAR_ORGS_STATE'})),
     }
 }
 

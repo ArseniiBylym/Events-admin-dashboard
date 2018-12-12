@@ -101,11 +101,44 @@ const currentUser = (state = {}, action) => {
     }
 }
 
+const eventFormInit = (state = {}, action) => {
+    switch (action.type) {
+        case 'INIT_EVENTS_STATE':
+            return {
+                data: action.data
+            }
+        case 'CLEAR_EVENTS_STATE':
+            return {
+                
+            }
+        default: 
+            return state
+    }
+}
+
+
+const orgFormInit = (state = {}, action) => {
+    switch (action.type) {
+        case 'INIT_ORGS_STATE':
+            return {
+                data: action.data
+            }
+        case 'CLEAR_ORGS_STATE':
+            return {
+                
+            }
+        default: 
+            return state
+    }
+}
+
 const reducers = combineReducers({
     events,
     organizators,
     currentUser,
-    form: formReducer
+    form: formReducer,
+    eventFormInit,
+    orgFormInit
 });
 
 export default reducers;
