@@ -18,7 +18,8 @@ import {
     ADD_CURRENT_EVENT,
     REMOVE_CURRENT_EVENT,
     ADD_NEW_EVENT,
-    DELETE_EVENT
+    DELETE_EVENT,
+    UPDATE_EVENT
 } from '../../store/actionTypes'
 
 
@@ -144,6 +145,42 @@ class EventForm extends Component {
         console.log(this.state)
         reset()
         this.props.onClose()
+
+        const orgData = this.props.orgList.find((item, i) => {
+            if(item.id === this.state.organizator) return true
+            else return false
+         })
+         if(this.state.img && typeof(this.state.img) !== 'string') {
+             getBase64(this.state.img).then(dataFile => {
+                firebaseDB.ref('/events/' + this.state.id).set({
+                     ...this.state,
+                     organizator: orgData,
+                     img: dataFile
+                 }).then((snapshot) => {
+                     this.props.updateEvent({
+                         ...this.state,
+                         organizator: orgData,
+                         img: dataFile,
+                        //  id: snapshot.key
+                     })
+                 }).catch((e) => {
+                     console.log(e.message)
+                 })
+             })
+         } else {
+             firebaseDB.ref('/events/' + this.state.id).set({
+                 ...this.state,
+                 organizator: orgData,
+             }).then((snapshot) => {
+                 this.props.updateEvent({
+                     ...this.state,
+                     organizator: orgData,
+                    //  id: snapshot.key
+                 })
+             }).catch((e) => {
+                 console.log(e.message)
+             })
+         }
     }
 
     createFormHandler = (reset) => {
@@ -305,6 +342,7 @@ const mapDispatchToProps = dispatch => {
         initEvent: (data) => (dispatch({type: 'INIT_EVENTS_STATE', data: data})),
         removeCurrentEvent: () => (dispatch({type: REMOVE_CURRENT_EVENT})),
         clearInitialState: () => (dispatch({type: 'CLEAR_EVENTS_STATE'})),
+        updateEvent: (data) => (dispatch({type: UPDATE_EVENT, data: data}))
     }
 }
 

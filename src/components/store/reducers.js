@@ -7,12 +7,14 @@ import {
     ADD_NEW_ORG,
     DELETE_ORG,
     INITIALIZE_ORGS,
+    UPDATE_ORG,
 
     ADD_CURRENT_EVENT,
     REMOVE_CURRENT_EVENT,
     ADD_NEW_EVENT,
     DELETE_EVENT,
     INITIALIZE_EVENTS,
+    UPDATE_EVENT,
 } from './actionTypes'
 
 
@@ -43,6 +45,18 @@ const events = (state = {}, action) => {
                 ...state,
                 eventsList: newList
         }
+        case UPDATE_EVENT: 
+            const newUpdatedList = state.eventsList.map((item, i ) => {
+                if(item.id == action.data.id) {
+                    return {
+                        ...action.data,
+                        id: item.id
+                    }
+                } else return item
+            }) 
+            return{
+                eventsList: newUpdatedList
+            }
         default: 
             return state
     }
@@ -75,6 +89,18 @@ const organizators = (state = {}, action) => {
             return {
                 ...state,
                 orgList: newList
+            }
+        case UPDATE_ORG: 
+            const newUpdatedList = state.orgList.map((item, i ) => {
+                if(item.id == action.data.id) {
+                    return {
+                        ...action.data,
+                        id: item.id
+                    }
+                } else return item
+            }) 
+            return{
+                orgList: newUpdatedList
             }
         default: 
             return state

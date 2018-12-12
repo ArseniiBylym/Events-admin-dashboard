@@ -62,19 +62,19 @@ class Organizators extends Component {
         if (this.props.orgList && this.props.orgList.length > 0) {
             list = this.props.orgList.map((item, i) => {
                 return (
-                    <ExpansionPanel>
+                    <ExpansionPanel key={item.id}>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                             <Grid container spacing={16}>
-                                <Grid item md={1} alignItems='center' alignContent='center' className='centerContent'>
+                                <Grid item md={1} className='centerContent'>
                                     <Avatar alt="Remy Sharp" src={item.logo} />
                                 </Grid>
-                                <Grid item md={3} alignItems='center' alignContent='center' className='centerContent'>
+                                <Grid item md={3} className='centerContent'>
                                     <Typography >{item.name}</Typography>
                                 </Grid>
-                                <Grid item md={3} alignItems='center' alignContent='center' className='centerContent'>
+                                <Grid item md={3} className='centerContent'>
                                     <Typography >{item.email}</Typography>
                                 </Grid>
-                                <Grid item md={3} alignItems='center' alignContent='center' className='centerContent'>
+                                <Grid item md={3} className='centerContent'>
                                     <Typography ><a href={item.site}>{item.site}</a></Typography>
                                 </Grid>
                             </Grid>
@@ -84,7 +84,7 @@ class Organizators extends Component {
                             <Button onClick={this.editHandler(i)} style={{ marginLeft: 'auto' }} color="primary" aria-label="Edit" >
                                 <EditIcon />
                             </Button>
-                            <Button onClick={this.deleteHandler(item.id, i)} color="" aria-label="Edit" >
+                            <Button onClick={this.deleteHandler(item.id, i)} aria-label="Edit" >
                                 <DeleteIcon />
                             </Button>
                         </ExpansionPanelDetails>

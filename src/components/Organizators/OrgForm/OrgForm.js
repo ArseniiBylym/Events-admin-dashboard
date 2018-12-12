@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form'
 import {getBase64} from '../../../utils/transformFunc'
-import {ADD_NEW_ORG, REMOVE_CURRENT_ORG} from '../../store/actionTypes'
+import {ADD_NEW_ORG, REMOVE_CURRENT_ORG, UPDATE_ORG} from '../../store/actionTypes'
 import {firebaseDB} from '../../../utils/firebase.config'
 
 
@@ -100,7 +100,41 @@ class OrgForm extends Component {
 
     updateFormHandler = (reset) => {
         console.log('update')
+        reset()
         this.props.onClose()
+
+        if(this.state.logo && typeof(this.state.logo) !== 'string') {
+            getBase64(this.state.logo).then(dataFile => {
+                firebaseDB.ref('/organizators/' + this.state.id).set({
+                    ...this.state,
+                    logo: dataFile
+                }).then((snapshot) => {
+                    this.props.updateOrg({
+                        ...this.state,
+                        // id: snapshot.key,
+                        logo: dataFile
+                    })
+                }).catch(e => {
+                    alert(e.message)
+                })
+               
+            })
+        } else {
+            firebaseDB.ref('/organizators/' + this.state.id).set({
+                ...this.state,
+                logo: this.state.logo || ''
+            }).then((snapshot) => {
+                this.props.updateOrg({
+                    ...this.state,
+                    // id: snapshot.key,
+                    logo: this.state.logo || ''
+                })
+            }).catch(e => {
+                alert(e.message)
+            })
+            
+        }
+
     }
 
     createFormHandler =  (reset) => {
@@ -112,7 +146,6 @@ class OrgForm extends Component {
             getBase64(this.state.logo).then(dataFile => {
                 firebaseDB.ref('/organizators/').push({
                     ...this.state,
-                    // id: Math.random() + new Date(),
                     logo: dataFile
                 }).then((snapshot) => {
                     this.props.addNewOrg({
@@ -128,7 +161,6 @@ class OrgForm extends Component {
         } else {
             firebaseDB.ref('/organizators/').push({
                 ...this.state,
-                // id: Math.random() + new Date(),
                 logo: this.state.logo || ''
             }).then((snapshot) => {
                 this.props.addNewOrg({
@@ -148,9 +180,12 @@ class OrgForm extends Component {
     }
 
     componentDidMount = () => {
-        
+        console.log(this.state)
         if(this.props.currentOrg) {
             this.props.initOrg(this.props.currentOrg)
+            this.setState({
+                ...this.props.currentOrg,
+            })
         }
     }
     
@@ -228,6 +263,7 @@ const mapDispatchToProps = dispatch => {
         initOrg: (data) => (dispatch({type: 'INIT_ORGS_STATE', data: data})),
         removeCurrentOrg: () => (dispatch({type: REMOVE_CURRENT_ORG})),
         clearInitialState: () => (dispatch({type: 'CLEAR_ORGS_STATE'})),
+        updateOrg: (data) => (dispatch({type: UPDATE_ORG, data: data}))
     }
 }
 
