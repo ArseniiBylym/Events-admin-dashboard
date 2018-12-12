@@ -157,15 +157,16 @@ class EventForm extends Component {
         })
         if(this.state.img && typeof(this.state.img) !== 'string') {
             getBase64(this.state.img).then(dataFile => {
-                firebaseDB.ref('/events/').push({
+               firebaseDB.ref('/events/').push({
                     ...this.state,
                     organizator: orgData,
                     img: dataFile
-                }).then(() => {
+                }).then((snapshot) => {
                     this.props.addNewEvent({
                         ...this.state,
                         organizator: orgData,
-                        img: dataFile
+                        img: dataFile,
+                        id: snapshot.key
                     })
                 }).catch((e) => {
                     console.log(e.message)
@@ -175,10 +176,11 @@ class EventForm extends Component {
             firebaseDB.ref('/events/').push({
                 ...this.state,
                 organizator: orgData,
-            }).then(() => {
+            }).then((snapshot) => {
                 this.props.addNewEvent({
                     ...this.state,
                     organizator: orgData,
+                    id: snapshot.key
                 })
             }).catch((e) => {
                 console.log(e.message)
@@ -192,15 +194,20 @@ class EventForm extends Component {
     }
 
     componentDidMount = () => {
+        console.log(this.state)
        if(this.props.currentEvent){
            console.log('dasdfsdf---------------- dsdsfdsf')
            this.props.initEvent(this.props.currentEvent)
+           this.setState({
+               ...this.props.currentEvent,
+               organizator: this.props.currentEvent.organizator.id
+           })
         }
     }
     
     componentWillUnmount = () => {
         this.props.clearInitialState()
-        
+
         if(this.props.currentEvent) {
             this.props.removeCurrentEvent()
         }

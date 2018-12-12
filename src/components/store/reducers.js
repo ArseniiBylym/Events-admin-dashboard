@@ -105,7 +105,10 @@ const eventFormInit = (state = {}, action) => {
     switch (action.type) {
         case 'INIT_EVENTS_STATE':
             return {
-                data: action.data
+                data: {
+                    ...action.data,
+                    organizator: action.data.organizator.id
+                }
             }
         case 'CLEAR_EVENTS_STATE':
             return {

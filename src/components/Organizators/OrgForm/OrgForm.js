@@ -112,12 +112,12 @@ class OrgForm extends Component {
             getBase64(this.state.logo).then(dataFile => {
                 firebaseDB.ref('/organizators/').push({
                     ...this.state,
-                    id: Math.random() + new Date(),
+                    // id: Math.random() + new Date(),
                     logo: dataFile
-                }).then(() => {
+                }).then((snapshot) => {
                     this.props.addNewOrg({
                         ...this.state,
-                        id: Math.random() + new Date(),
+                        id: snapshot.key,
                         logo: dataFile
                     })
                 }).catch(e => {
@@ -128,12 +128,12 @@ class OrgForm extends Component {
         } else {
             firebaseDB.ref('/organizators/').push({
                 ...this.state,
-                id: Math.random() + new Date(),
+                // id: Math.random() + new Date(),
                 logo: this.state.logo || ''
-            }).then(() => {
+            }).then((snapshot) => {
                 this.props.addNewOrg({
                     ...this.state,
-                    id: Math.random() + new Date(),
+                    id: snapshot.key,
                     logo: this.state.logo || ''
                 })
             }).catch(e => {
